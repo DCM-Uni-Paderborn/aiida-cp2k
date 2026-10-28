@@ -5,13 +5,12 @@
 # For further information on the license, see the LICENSE.txt file.           #
 ###############################################################################
 
-# The services image release and the tested Python package version are separate.
-ARG AIIDA_IMAGE_VERSION=2.5.2
+ARG AIIDA_VERSION=2.9.3
 
-FROM aiidateam/aiida-core-with-services:${AIIDA_IMAGE_VERSION}
+FROM aiidateam/aiida-core-with-services:aiida-${AIIDA_VERSION}
 
-ARG AIIDA_VERSION=2.9.2
-
+# Re-declare to make the pre-FROM value available to RUN instructions.
+ARG AIIDA_VERSION
 
 # To prevent the container to exit prematurely.
 ENV KILL_ALL_RPOCESSES_TIMEOUT=50
@@ -23,27 +22,19 @@ RUN set -ex ; \
 
 USER aiida
 
-# Run the plugin and service setup with the supported Python interpreter.
-# The older services image pins Python 3.10; override that pin for CI.
-RUN sed -i '/^python /d' "${CONDA_DIR}/conda-meta/pinned" && \
-    mamba install --yes -n base -c conda-forge "python=3.12" pip mamba && \
-    mamba clean --all -f -y
-
 RUN mamba create --yes -c conda-forge -n cp2k cp2k=9.1 && mamba clean --all -f -y
 
 # Install aiida-cp2k plugin.
 COPY --chown="${SYSTEM_UID}:${SYSTEM_GID}" . /home/aiida/aiida-cp2k
 
-# Resolve the requested AiiDA version together with the plugin dependencies.
-# Refresh compatible dependencies retained by the older Conda image as well.
+# Pin aiida-core so the plugin install cannot replace the image's version.
 # PyPI cp2k-input-tools 0.9.1 still requires Pint <0.24. Upstream PR #106
 # permits Pint 0.24, which supports NumPy 2; use that exact fix in CI until released.
-RUN pip install --upgrade --upgrade-strategy eager \
+RUN pip install \
     "aiida-core==${AIIDA_VERSION}" \
     "cp2k-input-tools @ git+https://github.com/cp2k/cp2k-input-tools.git@027cc072012e373265ba8368973a4a7158e33a19" \
     "pint==0.24.4" \
-    "./aiida-cp2k[dev,docs]"
-RUN python -c "import sys; import importlib.metadata as m; print('Testing Python', sys.version); assert sys.version_info[:2] == (3, 12); print('Testing aiida-core', m.version('aiida-core')); assert m.version('aiida-core') == '${AIIDA_VERSION}'"
+    ./aiida-cp2k[dev,docs]
 
 # Install coverals.
 RUN pip install coveralls

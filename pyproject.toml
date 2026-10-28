@@ -18,9 +18,9 @@ classifiers = [
     "Operating System :: MacOS :: MacOS X",
     "Programming Language :: Python :: 3",
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
-    "aiida-core>=2.8.0,<3.0.0",
+    "aiida-core>=2.7.0,<3.0.0",
     "aiida-gaussian-datatypes",
     "ase",
     "ruamel.yaml>=0.16.5",
@@ -59,7 +59,6 @@ cp2k = "aiida_cp2k.calculations:Cp2kCalculation"
 [project.entry-points."aiida.parsers"]
 cp2k_base_parser = "aiida_cp2k.parsers:Cp2kBaseParser"
 cp2k_advanced_parser = "aiida_cp2k.parsers:Cp2kAdvancedParser"
-cp2k_tools_parser = "aiida_cp2k.parsers:Cp2kToolsParser"
 
 [project.entry-points."aiida.workflows"]
 "cp2k.base" = "aiida_cp2k.workchains:Cp2kBaseWorkChain"

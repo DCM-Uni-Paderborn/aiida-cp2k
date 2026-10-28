@@ -10,7 +10,7 @@
 
 ## Installation
 
-Requires Python `>=3.12` and AiiDA `>=2.8,<3`.
+Requires Python `>=3.10` and AiiDA `>=2.7,<3`.
 
 If you use `pip`, you can install it as:
 ```
@@ -55,12 +55,12 @@ Once this is done, you can build the Docker image with the following command:
 ```bash
 docker build -t aiida_cp2k_test .
 ```
-The test image installs AiiDA 2.9.2 by default. The services-image tag and the tested AiiDA package version are separate because a services image is not published for every AiiDA release. To select another package version, set `AIIDA_VERSION`:
+The image is based on `aiidateam/aiida-core-with-services:aiida-2.9.3` by default.
+To test against another version of aiida-core, you can specify the build argument `AIIDA_VERSION`:
 ```bash
-docker build -t aiida_cp2k_test --build-arg AIIDA_VERSION=2.9.2 .
+docker build -t aiida_cp2k_test --build-arg AIIDA_VERSION=2.7.0 .
 ```
-
-The default services image is `aiidateam/aiida-core-with-services:2.5.2`. The build upgrades its interpreter to Python 3.12, overriding the image's Python 3.10 pin. Override the image tag with `AIIDA_IMAGE_VERSION` when needed. The build checks both Python 3.12 and the installed AiiDA package against `AIIDA_VERSION`.
+The build uses the `aiida-<version>` image tags, which exist from AiiDA 2.7.0 onwards.
 
 Then, you can launch the container:
 
