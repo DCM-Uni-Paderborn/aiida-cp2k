@@ -59,6 +59,7 @@ cp2k = "aiida_cp2k.calculations:Cp2kCalculation"
 [project.entry-points."aiida.parsers"]
 cp2k_base_parser = "aiida_cp2k.parsers:Cp2kBaseParser"
 cp2k_advanced_parser = "aiida_cp2k.parsers:Cp2kAdvancedParser"
+cp2k_tools_parser = "aiida_cp2k.parsers:Cp2kToolsParser"
 
 [project.entry-points."aiida.workflows"]
 "cp2k.base" = "aiida_cp2k.workchains:Cp2kBaseWorkChain"
